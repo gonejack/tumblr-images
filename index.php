@@ -5,7 +5,7 @@
 
 	$images = $html->find('img');
 	foreach ($images as $img) {
-		if (preg_match("/tumblr_.+((1280)|(500))\.(png)?(jpg)?$/", $img->src)) {
+		if (preg_match("/media\.tumblr\.com.+((1280)|(500))\.(png)?(jpg)?$/", $img->src)) {
 			header('location: ' . $img->src);
 			break;
 		}
