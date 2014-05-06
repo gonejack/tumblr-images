@@ -14,9 +14,9 @@
 			$img1280 = preg_replace($pattern, '${1}1280$3', $src);
 			$img500 = preg_replace($pattern, '${1}500$3', $src);
 
-			if (fopen($img1280, 'r')) {
+			if (@fopen($img1280, 'r')) {
 				$src = $img1280;
-			} else if (fopen($img500, 'r')){
+			} else if (@fopen($img500, 'r')){
 				$src = $img500;
 			}
 
