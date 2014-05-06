@@ -4,6 +4,7 @@
 	$html = new simple_html_dom($url);
 
 	$images = $html->find('img');
+
 	foreach ($images as $img) {
 		if (preg_match("/(.+media\.tumblr\.com.+)((1280)|(500)|(250))(\.(png)?(jpg)?)$/", $img->src)) {
 
@@ -21,4 +22,5 @@
 			header('location: ' . $src);
 			break;
 		}
+
 	}
