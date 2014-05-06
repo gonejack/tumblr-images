@@ -18,7 +18,7 @@
 				$src = $img500;
 			}
 
-			header('location: ' . $img->src);
+			header('location: ' . $src);
 			break;
 		}
 	}
