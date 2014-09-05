@@ -1,2 +1,10 @@
+application: tumblr-images
+version: 2-0-test
 runtime: php
+handlers:
+- url: /images
+  static_dir: static/images
+
+- url: /.*
+  script: fetch.php
 api_version: 1
