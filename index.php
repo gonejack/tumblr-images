@@ -1,27 +1,18 @@
 <?php
-	include_once('simple_html_dom.php');
-	$pattern = "/(.+media\.tumblr\.com.+)((?:1280)|(?:500)|(?:250))(\.(?:png)?(?:jpg)?)$/";
+        $pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?)"@';
 
-	$url = $_GET['url'];
-	$html = new simple_html_dom($url);
-	$images = $html->find('img');
+        $content = file_get_contents($_GET['url']);
 
-	foreach ($images as $img) {
-		if (preg_match($pattern, $img->src)) {
+        if ($content) {
+        	
+	       preg_match($pattern, $content, $matches);
 
-			$src = $img->src;
+                $src = $matches[0];
+                
+                $img1280 = preg_replace($pattern, '${1}1280${3}', $src);
+                $img500 = preg_replace($pattern, '${1}500${3}', $src);
 
-			$img1280 = preg_replace($pattern, '${1}1280$3', $src);
-			$img500 = preg_replace($pattern, '${1}500$3', $src);
+                $src = preg_replace($pattern, '${1}${2}${3}', $src);
 
-			if (@fopen($img1280, 'r')) {
-				$src = $img1280;
-			} else if (@fopen($img500, 'r')){
-				$src = $img500;
-			}
-
-			header('location: ' . $src);
-			break;
-		}
-
-	}
+                header('location: ' . $src);
+        }
