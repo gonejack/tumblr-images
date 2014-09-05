@@ -14,5 +14,6 @@
 
                 $src = preg_replace($pattern, '${1}${2}${3}', $src);
 
-                header('location: ' . $src);
+                header('Content-Type:'.'image/jpeg');
+                readfile($src);
         }
