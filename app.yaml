@@ -2,6 +2,6 @@ application: tumblr-images
 version: 1
 runtime: php
 handlers:
-- url: /.*
+- url: .*
   script: fetch.php
 api_version: 1
