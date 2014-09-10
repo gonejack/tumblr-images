@@ -1,19 +1,23 @@
 <?php
-        $pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?)"@';
+    if (!isset($_GET['url'])) {
+        echo 'hello';
+        exit();
+    }
 
-        $content = file_get_contents($_GET['url']);
+    $pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?)"@';
+    $content = file_get_contents($_GET['url']);
 
-        if ($content) {
-        	
-	       preg_match($pattern, $content, $matches);
+    if ($content) {
 
-                $src = $matches[0];
-                
-                $img1280 = preg_replace($pattern, '${1}1280${3}', $src);
-                $img500 = preg_replace($pattern, '${1}500${3}', $src);
+        preg_match($pattern, $content, $matches);
 
-                $src = preg_replace($pattern, '${1}${2}${3}', $src);
+        $src = $matches[0];
+        
+        $img1280 = preg_replace($pattern, '${1}1280${3}', $src);
+        $img500 = preg_replace($pattern, '${1}500${3}', $src);
 
-                header('Content-Type:'.'image/jpeg');
-                readfile($src);
-        }
+        $src = preg_replace($pattern, '${1}${2}${3}', $src);
+
+        header('Content-Type:'.'image/jpeg');
+        readfile($src);
+    }
