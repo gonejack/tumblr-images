@@ -60,7 +60,7 @@
 	    			.'</p>'
 	    			.'</div>';
     	
-    	file_put_contents('images.html', $html.$imageTag, FILE_APPEND);
+    	file_put_contents('images.html', $imageTag, FILE_APPEND);
     	
     	$filename = basename($src);
     	if (!file_exists($filename)) {
@@ -78,6 +78,6 @@
 				."ParsedURL $parsedUrl"
 				.'</p>';
 		
-		file_put_contents('errors.html', $html.$error, FILE_APPEND);
+		file_put_contents('errors.html', $error, FILE_APPEND);
 		
 	}
