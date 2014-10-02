@@ -10,7 +10,7 @@
 
     if ($content && $src) {
         header('Location: '. $src, true, 301);
-        echo 'gotten!';
+        
         //logInfo($src, $blog);
     } else {
     	//logError($src, $content, $_GET['url'], parseUrl($_GET['url']));
