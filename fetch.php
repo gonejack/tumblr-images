@@ -54,7 +54,7 @@
 	    			'<div>
 	    				<img src="'.$src.'">'
 	    			.'<p>'
-	    				.'Time '.date('Y-m-d H:m:s').'<br>'
+	    				.'Time '.date('Y-m-d H:i:s').'<br>'
 	    				."Source $src<br>"
 	    				."Blog $blog"
 	    			.'</p>'
@@ -71,7 +71,7 @@
 	function logError($src, $content, $originUrl, $parsedUrl) {
 
 		$error = '<p>'
-				.'Time '.date('Y-m-d H:m:s').'<br>'
+				.'Time '.date('Y-m-d H:i:s').'<br>'
 				.'Source '.($src ? $src : 'False').'<br>'
 				.'Content '.($content ? strlen($content) : 'False').'<br>'
 				.'OriginalURL '.$originUrl.'<br>'
