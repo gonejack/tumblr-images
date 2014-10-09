@@ -3,7 +3,7 @@
         echo 'hello';
         exit();
     }
-    
+
     $blog = $_GET['blog'];
     $content = getContent($_GET['url']);
 	$src = getSrc($content);
@@ -19,12 +19,11 @@
     if (isset($_GET['forward'])) {
     	file_get_contents($_GET['forward'].'?'.$_SERVER['QUERY_STRING']);
     }
-    
-    
+
+
     function parseUrl($origin) {
     	preg_match('@http.+/post/\d+@', $origin, $temp);
     	return $temp[0];
-    	
     }
     
     function getContent($url) {
@@ -37,17 +36,13 @@
     }
     
     function getSrc($content) {
-    	
     	$pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?)"@';
-    	
     	preg_match($pattern, $content, $matches);
-    	
+
     	return preg_replace($pattern, '${1}${2}${3}', $matches[0]);
-    	
     }
     
     function logInfo($src, $blog) {
-    	
     	$imageTag = 
 	    			'<div>
 	    				<img src="'.$src.'">'
@@ -67,7 +62,6 @@
     }
 
 	function logError($src, $content, $originUrl, $parsedUrl) {
-
 		$error = '<p>'
 				.'Time '.date('Y-m-d H:i:s').'<br>'
 				.'Source '.($src ? $src : 'False').'<br>'
@@ -75,7 +69,7 @@
 				.'OriginalURL '.$originUrl.'<br>'
 				."ParsedURL $parsedUrl"
 				.'</p>';
-		
+
 		file_put_contents('errors.html', $error, FILE_APPEND);
 		
 	}
