@@ -10,7 +10,6 @@
 
     if ($content && $src) {
         header('Location: '. $src, true, 301);
-        echo 'gotten!';
         //logInfo($src, $blog);
     } else {
     	//logError($src, $content, $_GET['url'], parseUrl($_GET['url']));
@@ -23,7 +22,6 @@
     
     
     function parseUrl($origin) {
-    	
     	preg_match('@http.+/post/\d+@', $origin, $temp);
     	return $temp[0];
     	
@@ -60,7 +58,7 @@
 	    			.'</p>'
 	    			.'</div>';
     	
-    	file_put_contents('images.html', $html.$imageTag, FILE_APPEND);
+    	file_put_contents('images.html', $imageTag, FILE_APPEND);
     	
     	$filename = basename($src);
     	if (!file_exists($filename)) {
@@ -78,6 +76,6 @@
 				."ParsedURL $parsedUrl"
 				.'</p>';
 		
-		file_put_contents('errors.html', $html.$error, FILE_APPEND);
+		file_put_contents('errors.html', $error, FILE_APPEND);
 		
 	}
