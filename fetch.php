@@ -36,7 +36,7 @@
     }
     
     function getSrc($content) {
-    	$pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?)"@';
+    	$pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?(?:gif)?)"@';
     	preg_match($pattern, $content, $matches);
 
     	return preg_replace($pattern, '${1}${2}${3}', $matches[0]);
