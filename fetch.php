@@ -36,10 +36,10 @@
     }
     
     function getSrc($content) {
-    	$pattern = '@(?:(?:content=")|(?:src="))(https?://[\S]+?media\.tumblr\.com[\S]+?_)((?:1280)|(?:500)|(?:400)|(?:250))(\.(?:png)?(?:jpg)?(?:gif)?)"@';
+    	$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+)/(?:tumblr_[^_]+_(?:1280|500|400|250)\.(?:png|jpg|gif)))">i';
     	preg_match($pattern, $content, $matches);
 
-    	return preg_replace($pattern, '${1}${2}${3}', $matches[0]);
+    	return $matches[1];
     }
     
     function logInfo($src, $blog) {
