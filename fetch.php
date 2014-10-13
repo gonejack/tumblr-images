@@ -27,9 +27,9 @@
     }
     
     function getContent($url) {
-    	$content = file_get_contents($url);
+    	$content = @file_get_contents($url);
     	if (!$content || strlen($content) < 100) {
-    		$content = file_get_contents(parseUrl($url));
+    		$content = @file_get_contents(parseUrl($url));
     	}
     	
     	return $content;
@@ -38,8 +38,8 @@
     function getSrc($content) {
     	$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+)/(?:tumblr_[^_]+_(1280|500|400|250)\.(?:png|jpg|gif)))">i';
     	preg_match_all($pattern, $content, $matches);
-	array_multisort($matches[2], SORT_DESC, $matches[1]);
-
+		array_multisort($matches[2], SORT_DESC, $matches[1]);
+		
     	return $matches[1][0];
     }
     
@@ -72,5 +72,4 @@
 				.'</p>';
 
 		file_put_contents('errors.html', $error, FILE_APPEND);
-		
 	}
