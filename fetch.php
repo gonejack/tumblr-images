@@ -36,7 +36,7 @@
     }
     
     function getSrc($content) {
-    	$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+)/(?:tumblr_[^_]+_(1280|500|400|250)\.(?:png|jpg|gif)))">i';
+    	$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_[^_]+_(1280|500|400|250)\.(?:png|jpg|gif)))">i';
     	preg_match_all($pattern, $content, $matches);
 		array_multisort($matches[2], SORT_DESC, $matches[1]);
 		
