@@ -28,7 +28,7 @@
     
     function getContent($url) {
     	$content = @file_get_contents($url);
-    	if (!$content || strlen($content) < 100) {
+    	if (strlen($content) < 100) {
     		$content = @file_get_contents(parseUrl($url));
     	}
     	
