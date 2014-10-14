@@ -22,8 +22,8 @@
 
 
     function parseUrl($origin) {
-    	preg_match('@http.+/post/\d+@', $origin, $temp);
-    	return $temp[0];
+    	preg_match('<http.+/post/\d+>', $origin, $new);
+    	return $new[0];
     }
     
     function getContent($url) {
@@ -39,13 +39,13 @@
 	$specs = array('1280', '500', '400', '250');
 	foreach ($specs as $item) {
 		$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_[^_]+_'.$item.'\.(?:png|jpg|gif)))">i';
-		preg_match($pattern, $content, $matche);
-		if ($matche) {
+		preg_match($pattern, $content, $match);
+		if ($match) {
 			break;
 		}
 	}
 	
-	return $matche ? $matche[1] : false;
+	return $match ? $match[1] : false;
     }
     
     function logInfo($src, $blog) {
