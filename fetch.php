@@ -36,11 +36,16 @@
     }
     
     function getSrc($content) {
-    	$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_[^_]+_(1280|500|400|250)\.(?:png|jpg|gif)))">i';
-    	preg_match_all($pattern, $content, $matches);
-		array_multisort($matches[2], SORT_DESC, $matches[1]);
-		
-    	return $matches[1][0];
+	$specs = array('1280', '500', '400', '250');
+	foreach ($specs as $item) {
+		$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_[^_]+_'.$item.'\.(?:png|jpg|gif)))">i';
+		preg_match($pattern, $content, $matche);
+		if ($matche) {
+			break;
+		}
+	}
+	
+	return $matche ? $matche[1] : false;
     }
     
     function logInfo($src, $blog) {
