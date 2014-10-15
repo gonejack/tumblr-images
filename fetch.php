@@ -38,7 +38,7 @@
     function getSrc($content) {
 		$specs = array('1280', '500', '400', '250');
 		foreach ($specs as $item) {
-			$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_[^_]+_'.$item.'\.(?:png|jpg|gif)))">i';
+			$pattern = '<(?:content|src)="((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_\w+_'.$item.'\.(?:png|jpg|gif)))">i';
 			preg_match($pattern, $content, $match);
 			if ($match) {
 				return $match[1];
