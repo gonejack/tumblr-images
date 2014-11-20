@@ -4,7 +4,7 @@
         exit();
     }
 
-    $blog = empty($_GET['blog']) ? $_GET['blog'] : 'unknow';
+    $blog = isset($_GET['blog']) ? $_GET['blog'] : 'unknow';
     $content = getContent($_GET['url']);
 	$src = getSrc($content);
 
