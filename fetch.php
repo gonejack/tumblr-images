@@ -60,14 +60,17 @@ function getContent($url) {
  */
 function getSrc($content) {
 	$specs = array(1280, 500, 400, 250);
-	foreach ($specs as $item) {
-		$pattern = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_\w+_$item\.(?:png|jpg|gif)))\">i";
-		preg_match($pattern, $content, $match);
-		if ($match) {
-			return $match[1];
-		}
+	
+	foreach ($specs as $spec) {
+		$pattern = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_\w+_$spec\.(?:png|jpg|gif)))\">i";
+		if (preg_match($pattern, $content, $match)) return $match[1];
 	}
 
+	foreach ($specs as $spec) {
+		$pattern = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:\w+_$spec\.(?:png|jpg|gif)))\">i";
+		if (preg_match($pattern, $content, $match)) return $match[1];
+	}
+	
 	return false;
 }
 
