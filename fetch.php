@@ -27,7 +27,7 @@ if ($content && $src) {
  * second type like http://blabla/digits/blabla
  * when you can't load content from second type, try first type
  *
- * @param $origin Original URL(second type)
+ * @param $origin string Original URL(second type)
  * @return mixed
  */
 function parseUrl($origin) {
@@ -55,7 +55,7 @@ function getContent($url) {
 
 /**
  * Fetch Image file Source from HTML content using Regular Expression
- * @param $content HTML file content
+ * @param $content string HTML file content
  * @return bool|string
  */
 function getSrc($content) {
@@ -94,7 +94,8 @@ END;
 }
 
 //error log
-function logError($src, $content, $originUrl, $parsedUrl) {
+function logError($src, $content, $parsedUrl)
+{
 	$time    = date('Y-m-d H:i:s');
 	$src     = ($src ? $src : 'False');
 	$content = strlen($content);
