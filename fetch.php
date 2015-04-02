@@ -59,7 +59,7 @@ function getContent($url) {
  * @return bool|string
  */
 function getSrc($content) {
-	$specs = array(1280, 500, 400, 250);
+    $specs = array(1280, 540, 500, 400, 250);
 	
 	foreach ($specs as $spec) {
 		$pattern = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:\w+/)?(?:tumblr_\w+_$spec\.(?:png|jpg|gif)))\">i";
@@ -97,8 +97,7 @@ END;
 }
 
 //error log
-function logError($src, $content, $parsedUrl)
-{
+function logError($src, $content, $parsedUrl) {
 	$time    = date('Y-m-d H:i:s');
 	$src     = ($src ? $src : 'False');
 	$content = strlen($content);
