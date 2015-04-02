@@ -67,6 +67,8 @@ function getSrcArray($content) {
 
     $patten = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:(\w+)/)?(?:tumblr_\w+_(1280|500|400|250)\.(?:png|jpg|gif)))\">i";
 
+    $return = array();
+
     if (preg_match_all($patten, $content, $matches)) {
 
         list(, $srcList, $hashList, $sizeList) = $matches;
@@ -81,10 +83,12 @@ function getSrcArray($content) {
             }
         }
 
-        return array_column($temp, 'src');
-    } else {
-        return array();
+        foreach ($temp as $item) {
+            $return[] = $item['src'];
+        }
     }
+
+    return $return;
 }
 
 function makeZipString($imageSources) {
