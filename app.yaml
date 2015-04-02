@@ -4,5 +4,8 @@ runtime: php
 api_version: 1
 threadsafe: true
 handlers:
-- url: .*
+- url: /multiFetch.php.*
+  script: multiFetch.php
+
+- url: /.*
   script: fetch.php
