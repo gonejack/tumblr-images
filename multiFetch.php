@@ -1,7 +1,7 @@
 <?php
 
 if (empty($_GET['url'])) {
-    exit('Hello World!');
+    exit('Hello World! fetch more images');
 }
 
 $htmlSource     = getContent($_GET['url']);
