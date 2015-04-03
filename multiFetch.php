@@ -22,7 +22,7 @@ if (!$htmlSource || $numberOfImages === 0) {
 
         header('Content-Type: application/zip');
         header('Content-Length: ' . strlen($zipString));
-        header('Content-Disposition: attachment; filename=' . date('Y-m-d') . '.zip');
+        header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
 
         echo $zipString;
     }
