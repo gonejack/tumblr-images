@@ -22,7 +22,7 @@ if (!$htmlSource || $numberOfImages === 0) {
     $imageZipAndValidSrc = getImageZipAndValidSrc($imageSources);
 
     if (count($imageZipAndValidSrc['validSrc']) === 1) {
-        header('Location: ' . $imageSources[0], true, 301);
+        header('Location: ' . $imageZipAndValidSrc['validSrc'][0], true, 301);
         exit;
     }
 
