@@ -17,17 +17,24 @@ if (!$htmlSource || $numberOfImages === 0) {
     if ($numberOfImages === 1) {
         header('Location: ' . $imageSources[0], true, 301);
         exit;
-    } else {
-        $zipString = makeZipString($imageSources);
-
-        header('Content-Type: application/zip');
-        header('Content-Length: ' . strlen($zipString));
-        header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
-
-        echo $zipString;
     }
 
+    $imageZipAndValidSrc = getImageZipAndValidSrc($imageSources);
+
+    if (count($imageZipAndValidSrc['validSrc']) === 1) {
+        header('Location: ' . $imageSources[0], true, 301);
+        exit;
+    }
+
+    header('Content-Type: application/zip');
+    header('Content-Length: ' . strlen($imageZipAndValidSrc['zipFile']));
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
+
+    echo $imageZipAndValidSrc['zipFile'];
+
 }
+
+var_dump($imageSources);
 
 /**
  * Parse URL
@@ -94,17 +101,59 @@ function getSrcArray($content) {
 }
 
 /**
+ * Parse a set of HTTP headers
+ *
+ * @param array The php headers to be parsed
+ * @param [string] The name of the header to be retrieved
+ * @return A header value if a header is passed;
+ *         An array with all the headers otherwise
+ */
+function parseHeaders(array $headers, $header = null) {
+    $output = array();
+
+    if ('HTTP' === substr($headers[0], 0, 4)) {
+        list(, $output['status'], $output['status_text']) = explode(' ', $headers[0]);
+        unset($headers[0]);
+    }
+
+    foreach ($headers as $v) {
+        $h                         = preg_split('/:\s*/', $v);
+        $output[strtolower($h[0])] = $h[1];
+    }
+
+    if (null !== $header) {
+        if (isset($output[strtolower($header)])) {
+            return $output[strtolower($header)];
+        }
+
+        return;
+    }
+
+    return $output;
+}
+
+/**
  * Download images, pack into a zip, return as zip string.
  * @param $imageSources
  * @return string
  */
-function makeZipString($imageSources) {
+function getImageZipAndValidSrc($imageSources) {
     require_once('zip.lib.php');
 
-    $zip = new ZipFile();
+    $zip      = new ZipFile();
+    $validSrc = array();
     foreach ($imageSources as $source) {
-        $zip->addFile(file_get_contents($source), basename($source));
+
+        $image = file_get_contents($source);
+
+        if (in_array(parseHeaders($http_response_header, 'status'), array(200, 301, 304))) {
+
+            $zip->addFile($image, basename($source));
+            $validSrc[] = $source;
+
+        }
+
     }
 
-    return $zip->file();
+    return array('zipFile' => $zip->file(), 'validSrc' => $validSrc);
 }
