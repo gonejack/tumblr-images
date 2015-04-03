@@ -9,7 +9,9 @@ $imageSources   = getSrcArray($htmlSource);
 $numberOfImages = count($imageSources);
 
 if (!$htmlSource || $numberOfImages === 0) {
+
     echo 'seems something wrong';
+
 } else {
 
     if ($numberOfImages === 1) {
@@ -65,7 +67,7 @@ function getContent($url) {
  */
 function getSrcArray($content) {
 
-    $patten = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:(\w+)/)?(?:tumblr_\w+_(1280|500|400|250)\.(?:png|jpg|gif)))\">i";
+    $patten = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:(\w+)/)?(?:tumblr_\w+_(1280|540|500|400|250)\.(?:png|jpg|gif)))\">i";
 
     $return = array();
 
@@ -91,6 +93,11 @@ function getSrcArray($content) {
     return $return;
 }
 
+/**
+ * Download images, pack into a zip, return as zip string.
+ * @param $imageSources
+ * @return string
+ */
 function makeZipString($imageSources) {
     require_once('zip.lib.php');
 
