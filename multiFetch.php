@@ -34,8 +34,6 @@ if (!$htmlSource || $numberOfImages === 0) {
 
 }
 
-var_dump($imageSources);
-
 /**
  * Parse URL
  * tumblr has two type of url
