@@ -15,14 +15,14 @@ function main() {
     $intCountOfImagesUrls === 1 && redirectAndExit(array_pop($arrImagesUrls));  #we got just one image url to be fetch, so no need for fetching, just redirect the browser to it.
 
 
-    list($arrImageStrings, $arrValidImagesUrls) = fetchImages($arrImagesUrls); #not every url is available, so try every one.
+    $arrContentAndUrlOfValidImages = fetchImages($arrImagesUrls); #not every url is available, so try every one.
 
-    $intCountOfValidImagesUrls = count($arrValidImagesUrls);    #check out the number of available urls
+    $intCountOfValidImagesUrls = count($arrContentAndUrlOfValidImages['validImagesUrls']);    #check out the number of available urls
     $intCountOfValidImagesUrls === 0 && echoImageNotFoundTextFileAndExit($_GET['url']);
-    $intCountOfValidImagesUrls === 1 && redirectAndExit(array_pop($arrValidImagesUrls));    #if we got just one available url, no need to pack the image cause we could just redirect the browser.
+    $intCountOfValidImagesUrls === 1 && redirectAndExit(array_pop($arrContentAndUrlOfValidImages['validImagesUrls']));    #if we got just one available url, no need to pack the image cause we could just redirect the browser.
 
     //when we got multiple images to deal with
-    $strZipString = makeZipPack($arrImageStrings, $arrValidImagesUrls);
+    $strZipString = makeZipPack($arrContentAndUrlOfValidImages['imageStrings'], $arrContentAndUrlOfValidImages['validImagesUrls']);
     outputZipPackAsFileDownload($strZipString);
 }
 
@@ -197,10 +197,10 @@ function outputZipPackAsFileDownload($strZipString) {
  */
 function echoImageNotFoundTextFileAndExit($strUrl) {
 
-    header('Content-Type: text/plain');
-    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.txt');
+    header('Content-Type: text/html');
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.html');
 
-    echo 'Images not found at ', $strUrl;
+    echo "Image not found at <a href='$strUrl'>";
 
     exit;
 }
