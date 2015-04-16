@@ -198,7 +198,7 @@ function outputZipPackAsFileDownload($strZipString) {
 function echoImageNotFoundTextFileAndExit($strUrl) {
 
     header('Content-Type: text/html');
-    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.html');
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
 
     echo "Image not found at <a href='$strUrl'><i>$strUrl</i></a>";
 
