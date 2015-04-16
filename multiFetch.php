@@ -132,8 +132,8 @@ function parseHeaders(array $headers, $header = null) {
 
 /**
  * Download images, pack into a zip, return as zip string.
- * @param $imageSources
- * @return string
+ * @param Array $imageSources
+ * @return Array
  */
 function getImageZipAndValidSrc($imageSources) {
     require_once('zip.lib.php');
