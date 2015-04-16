@@ -116,28 +116,6 @@ function fetchImages($arrImagesUrls) {
 }
 
 /**
- * generate zip file stream
- * @param $arrImageStrings
- * @param $arrImageUrls
- * @return string
- */
-function makeZipPack($arrImageStrings, $arrImageUrls) {
-    require_once('zip.lib.php');
-    $zipGenerator = new ZipFile();
-
-    for ($i = 0, $length = sizeof($arrImageStrings); $i < $length; $i++) {
-
-        $strImageString = $arrImageStrings[$i];
-        $strImageUrl    = $arrImageUrls[$i];
-
-        $zipGenerator->addFile($strImageString, basename($strImageUrl));
-
-    }
-
-    return $zipGenerator->file();
-}
-
-/**
  * Parse a set of HTTP headers
  *
  * @param array The php headers to be parsed
@@ -179,6 +157,42 @@ function redirectAndExit($strImageUrl) {
 }
 
 /**
+ * make a txt file including error message
+ * @param $strUrl
+ */
+function echoImageNotFoundTextFileAndExit($strUrl) {
+
+    header('Content-Type: text/html');
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
+
+    echo "Image not found at <a href='$strUrl' target='_self'><i>$strUrl</i></a>";
+
+    exit;
+}
+
+/**
+ * generate zip file stream
+ * @param $arrImageStrings
+ * @param $arrImageUrls
+ * @return string
+ */
+function makeZipPack($arrImageStrings, $arrImageUrls) {
+    require_once('zip.lib.php');
+    $zipGenerator = new ZipFile();
+
+    for ($i = 0, $length = sizeof($arrImageStrings); $i < $length; $i++) {
+
+        $strImageString = $arrImageStrings[$i];
+        $strImageUrl    = $arrImageUrls[$i];
+
+        $zipGenerator->addFile($strImageString, basename($strImageUrl));
+
+    }
+
+    return $zipGenerator->file();
+}
+
+/**
  * make some headers for zip file as attachment download
  * @param $strZipString
  */
@@ -189,18 +203,4 @@ function outputZipPackAsFileDownload($strZipString) {
     header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
 
     echo $strZipString;
-}
-
-/**
- * make a txt file including error message
- * @param $strUrl
- */
-function echoImageNotFoundTextFileAndExit($strUrl) {
-
-    header('Content-Type: text/html');
-    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
-
-    echo "Image not found at <a href='$strUrl'><i>$strUrl</i></a>";
-
-    exit;
 }
