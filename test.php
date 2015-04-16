@@ -165,7 +165,7 @@ function echoImageNotFoundTextFileAndExit($strUrl) {
     header('Content-Type: text/html');
     header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
 
-    echo "Image not found at <a href='$strUrl' target='_self'><i>$strUrl</i></a>";
+    echo "No tumblr images found at <a href='$strUrl' target='_self'><i>$strUrl</i></a>";
 
     exit;
 }
