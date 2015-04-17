@@ -38,10 +38,11 @@ function getPageSource($strUrl) {
     //Tumblr has two URL types, try the short one when the long one failed to be access.
     if (strlen($strPageSource) < 100) {
 
-        preg_match('<http.+/post/\d+>', $strUrl, $arrMatch);
-        $strShortUrl = $arrMatch[0];
+        $strShortUrl = '';
 
-        $strPageSource = @file_get_contents($strShortUrl);
+        preg_match('<http.+/post/\d+>', $strUrl, $arrMatch) && $strShortUrl = $arrMatch[0];
+
+        $strShortUrl && $strPageSource = @file_get_contents($strShortUrl);
 
         //check one more time
         strlen($strPageSource) < 100 && $strPageSource = false;
