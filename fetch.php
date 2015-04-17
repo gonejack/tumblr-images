@@ -102,7 +102,11 @@ function fetchImages($arrImagesUrls) {
     foreach ($arrImagesUrls as $strImageUrl) {
 
         $strImageString = @file_get_contents($strImageUrl);
-        $intHttpStatus  = parseHeaders($http_response_header, 'status');
+        if ($strImageString === false) {
+            continue;
+        }
+
+        $intHttpStatus = parseHeaders($http_response_header, 'status');
 
         $boolFetchSuccess = in_array($intHttpStatus, $arrValidStatus);
 
