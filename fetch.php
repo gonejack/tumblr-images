@@ -4,7 +4,8 @@ main();
 
 function main() {
     if (!isset($_GET['url']) || !preg_match('#^http.?://.+\.tumblr\.com.*#i', $_GET['url'])) {
-        var_dump($_GET['url']) && exit('Hello World!');
+        echo $_GET['url'];
+        exit('Hello World!');
     }
 
     $strPageSource = getPageSource(encode_cjk_url($_GET['url']));   #get HTML page source code
