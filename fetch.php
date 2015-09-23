@@ -3,9 +3,9 @@
 main();
 
 function main() {
-    (!isset($_GET['url']) || !filter_var($_GET['url'], FILTER_VALIDATE_URL)) && exit('Hello World!');
+    (!isset($_GET['url']) || !preg_match('#^http.?://.+\.tumblr\.com.*#i', $_GET['url'])) && exit('Hello World!');
 
-    $strPageSource = getPageSource($_GET['url']);   #get HTML page source code
+    $strPageSource = getPageSource(encode_cjk_url($_GET['url']));   #get HTML page source code
     !$strPageSource && echoImageNotFoundTextFileAndExit($_GET['url']);
 
     $arrImagesUrls = parseImagesUrls($strPageSource);   #parse urls of images
@@ -24,6 +24,17 @@ function main() {
     //when we got multiple images to deal with
     $strZipString = makeZipPack($arrContentAndUrlOfValidImages['imageStrings'], $arrContentAndUrlOfValidImages['validImagesUrls']);
     outputZipPackAsFileDownload($strZipString);
+}
+
+function encode_cjk_url($raw_url) {
+
+    $url = $raw_url;
+    if (preg_match('#(http.+?tumblr\.com)(.+$)#i', $raw_url, $matches)) {
+        $path_parts = array_map('urlencode', explode('/', $matches[2]));
+        $url        = $matches[1] . implode('/', $path_parts);
+    }
+
+    return $url;
 }
 
 /**
