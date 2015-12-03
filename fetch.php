@@ -3,7 +3,7 @@
 main();
 
 function main() {
-    (!isset($_GET['url']) || !preg_match('#^http.?://.+\.tumblr\.com.*#i', $_GET['url'])) && exit('Hello World!');
+    (!isset($_GET['url']) || !preg_match('#^http.?://.+\.tumblr\.com.*#i', $_GET['url'])) && exit('Hello World tumblr!');
 
     $strPageSource = getPageSource(encode_cjk_url($_GET['url']));   #get HTML page source code
     !$strPageSource && echoImageNotFoundTextFileAndExit($_GET['url']);
