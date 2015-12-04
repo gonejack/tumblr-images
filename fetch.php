@@ -12,10 +12,10 @@ function main() {
     !isset($_GET['url']) && exit_script('Hello tumblr!');
 
     $query_param = get_query_param($_GET['url']);
-    !$query_param && exit_script('Not a valid tumblr URL');
+    !$query_param && echoTxtFile("Not valid tumblr URL: [{$_GET['url']}]") && exit_script();
 
     $post_info = query_tumblr_api($query_param);
-    !$post_info && exit_script('No post info fetched from tumblr');
+    !$post_info && echoTxtFile("No post info fetched from tumblr with given URL: [{$_GET['url']}], the post might be deleted") && exit_script();
 
     $post_info = $post_info['posts'][0];
 
@@ -39,7 +39,6 @@ function main() {
                 exit_script();
             }
             break;
-
     }
 }
 
