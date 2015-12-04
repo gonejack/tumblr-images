@@ -21,10 +21,10 @@ function main() {
 
     switch ($post_info['type']) {
         case 'answer':
-            $question = html_entity_decode($post_info['question']);
-            $answer   = html_entity_decode($post_info['answer']);
-            $tags     = implode('|', $post_info['tags']);
-            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n\r\nTags:$tags";
+            $question = htmlCharsDecode($post_info['question']);
+            $answer   = htmlCharsDecode($post_info['answer']);
+            $tags     = implode(', ', $post_info['tags']);
+            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n\r\nTags:$tags\r\n";
             echoTxtFile($output);
             exit_script();
             break;
@@ -32,7 +32,6 @@ function main() {
             $url = get_video_url($post_info);
             redirect_location($url) && exit_script();
             break;
-
         case 'photo':
         default:
             $urls  = get_photo_urls($post_info);
@@ -146,6 +145,12 @@ function redirect_location($redirect_url) {
     header('Location: ' . $redirect_url, true, 301);
 
     return true;
+}
+
+function htmlCharsDecode($str) {
+    $convertMap = array(0x0, 0x2FFFF, 0, 0xFFFF);
+
+    return mb_decode_numericentity(html_entity_decode($str), $convertMap, 'UTF-8');
 }
 
 /**
