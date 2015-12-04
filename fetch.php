@@ -135,10 +135,19 @@ function get_photo_urls($post_info) {
 }
 
 function get_video_url($post_info) {
-    $video_info = unserialize($post_info['video-source'])['o1'];
-    $video_id   = substr($video_info['video_preview_filename_prefix'], 0, -1);
+    $video_source = $post_info['video-source'];
+    if ($video_info = unserialize($video_source)) {
+        $video_info = $video_info['o1'];
+        $video_id   = substr($video_info['video_preview_filename_prefix'], 0, -1);
 
-    return "http://vt.tumblr.com/$video_id.mp4";
+        return "http://vt.tumblr.com/$video_id.mp4";
+    }
+
+    if (preg_match('<src="(.+?)">', $video_source, $match)) {
+        return $match[1];
+    }
+
+    return false;
 }
 
 function redirect_location($redirect_url) {
