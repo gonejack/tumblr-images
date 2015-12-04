@@ -1,134 +1,74 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Youi
+ * Date: 2015-12-03
+ * Time: 22:45
+ */
 
 main();
 
 function main() {
-    (!isset($_GET['url']) || !preg_match('#^http.?://.+\.tumblr\.com.*#i', $_GET['url'])) && exit('Hello World tumblr!');
+    !isset($_GET['url']) && exit_script('Hello tumblr!');
 
-    $strPageSource = getPageSource(encode_cjk_url($_GET['url']));   #get HTML page source code
-    !$strPageSource && echoImageNotFoundTextFileAndExit($_GET['url']);
+    $query_param = get_query_param($_GET['url']);
+    !$query_param && exit_script('Not a valid tumblr URL');
 
-    $arrImagesUrls = parseImagesUrls($strPageSource);   #parse urls of images
+    $post_info = query_tumblr_api($query_param);
+    !$post_info && exit_script('No post info fetched from tumblr');
 
-    $intCountOfImagesUrls = count($arrImagesUrls);
-    $intCountOfImagesUrls === 0 && echoImageNotFoundTextFileAndExit($_GET['url']);  #no image url found, echo error message as txt file.
-    $intCountOfImagesUrls === 1 && redirectAndExit(array_pop($arrImagesUrls));  #we got just one image url to be fetch, so no need for fetching, just redirect the browser to it.
+    $post_info = $post_info['posts'][0];
 
+    switch ($post_info['type']) {
+        case 'video':
+            $url = get_video_url($post_info);
+            redirect_location($url) && exit_script();
+            break;
 
-    $arrContentAndUrlOfValidImages = fetchImages($arrImagesUrls); #not every url is available, so try every one.
+        case 'photo':
+        default:
+            $urls  = get_photo_urls($post_info);
+            $count = count($urls);
+            $count === 1 && redirect_location($urls[0]) && exit_script();
+            $count > 1 && echoTxtFile(implode("\r\n", $urls)) && exit_script();
+            break;
 
-    $intCountOfValidImagesUrls = count($arrContentAndUrlOfValidImages['validImagesUrls']);    #check out the number of available urls
-    $intCountOfValidImagesUrls === 0 && echoImageNotFoundTextFileAndExit($_GET['url']);
-    $intCountOfValidImagesUrls === 1 && redirectAndExit(array_pop($arrContentAndUrlOfValidImages['validImagesUrls']));    #if we got just one available url, no need to pack the image cause we could just redirect the browser.
-
-    //when we got multiple images to deal with
-    $strZipString = makeZipPack($arrContentAndUrlOfValidImages['imageStrings'], $arrContentAndUrlOfValidImages['validImagesUrls']);
-    outputZipPackAsFileDownload($strZipString);
-}
-
-function encode_cjk_url($raw_url) {
-
-    $url = $raw_url;
-    if (preg_match('#(http.+?tumblr\.com)(.+$)#i', $raw_url, $matches)) {
-        $path_parts = array_map('urlencode', explode('/', $matches[2]));
-        $url        = $matches[1] . implode('/', $path_parts);
     }
-
-    return $url;
 }
 
 /**
- * get HTML page source
- * @param $strUrl
- * @return bool|string
+ * @param $url
+ * @return array|bool
  */
-function getPageSource($strUrl) {
-
-    $strPageSource = @file_get_contents($strUrl);
-
-    //Tumblr has two URL types, try the short one when the long one failed to be access.
-    if (strlen($strPageSource) < 100) {
-
-        $strShortUrl = '';
-
-        preg_match('<http.+/post/\d+>', $strUrl, $arrMatch) && $strShortUrl = $arrMatch[0];
-
-        $strShortUrl && $strPageSource = @file_get_contents($strShortUrl);
-
-        //check one more time
-        strlen($strPageSource) < 100 && $strPageSource = false;
+function get_query_param($url) {
+    if (preg_match('<https?://(.+\.tumblr\.com)/post/(\d+)>', $url, $match)) {
+        return array(
+            'post_domain' => $match[1],
+            'post_id'     => $match[2]
+        );
+    } else {
+        return false;
     }
-
-    return $strPageSource;
 }
 
 /**
- * regular expression fetching operation for images urls on HTML page source
- * @param $strPageSource
- * @return array
+ * @param $query_param
+ * @return bool|mixed
  */
-function parseImagesUrls($strPageSource) {
+function query_tumblr_api($query_param) {
+    $api_url = "http://{$query_param['post_domain']}/api/read/json?id={$query_param['post_id']}";
 
-    $arrReturnUrls = array();
+    $i = 0;
+    do {
+        $json_str    = file_get_contents($api_url);
+        $status_code = (int)parseHeaders($http_response_header, 'status');
+    } while (strlen($json_str) < 10 && $i++ < 3 && $status_code !== 404);
 
-    $strRegPatten = "<(?:content|src)=\"((?:https?://\d+\.media\.tumblr\.com)/(?:(\w+)/)?(?:tumblr_\w+_(1280|540|500|400|250)\.(?:png|jpg|gif)))\">i";
-
-    if (preg_match_all($strRegPatten, $strPageSource, $arrMatches)) {
-
-        $arrTemp = array(); #array( hashValue => array('url' => url, 'size' => size), hashValue => array('url' => url, 'size' => size),...)
-
-        list(, $arrUrls, $arrHashes, $arrSizes) = $arrMatches;
-
-        //filter, find out the url which represent the max size of the image.
-        for ($i = 0, $length = sizeof($arrUrls); $i < $length; $i++) {
-
-            $strUrl    = $arrUrls[$i];
-            $strHashes = $arrHashes[$i];
-            $strSize   = $arrSizes[$i];
-
-            if (empty($arrTemp[$strHashes]) || $arrTemp[$strHashes]['size'] < $strSize) {
-                $arrTemp[$strHashes] = array('url' => $strUrl, 'size' => $strSize);
-            }
-        }
-
-        foreach ($arrTemp as $arrItem) {
-            $arrReturnUrls[] = $arrItem['url'];
-        }
+    if (preg_match('<\{.+\}>', $json_str, $match)) {
+        return json_decode($match[0], true);
+    } else {
+        return false;
     }
-
-    return $arrReturnUrls;
-}
-
-/**
- * get images raw strings
- * @param $arrImagesUrls
- * @return array
- */
-function fetchImages($arrImagesUrls) {
-
-    $arrReturn = array('imageStrings' => array(), 'validImagesUrls' => array());
-
-    $arrValidStatus = array(200, 301, 304);
-
-    foreach ($arrImagesUrls as $strImageUrl) {
-
-        $strImageString = @file_get_contents($strImageUrl);
-        if ($strImageString === false) {
-            continue;
-        }
-
-        $intHttpStatus = parseHeaders($http_response_header, 'status');
-
-        $boolFetchSuccess = in_array($intHttpStatus, $arrValidStatus);
-
-        if ($boolFetchSuccess) {
-            $arrReturn['imageStrings'][]    = $strImageString;
-            $arrReturn['validImagesUrls'][] = $strImageUrl;
-        }
-
-    }
-
-    return $arrReturn;
 }
 
 /**
@@ -157,66 +97,52 @@ function parseHeaders(array $headers, $header = null) {
             return $output[strtolower($header)];
         }
 
-        return;
+        return null;
     }
 
     return $output;
 }
 
 /**
- * redirect the browser to the direct image url
- * @param $strImageUrl
+ * @param $post_info
+ * @return array
  */
-function redirectAndExit($strImageUrl) {
-    header('Location: ' . $strImageUrl, true, 301);
-    exit;
-}
+function get_photo_urls($post_info) {
+    $urls = array();
 
-/**
- * make a txt file including error message
- * @param $strUrl
- */
-function echoImageNotFoundTextFileAndExit($strUrl) {
-
-    header('Content-Type: text/html');
-    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
-
-    echo "No tumblr images found at <a href='$strUrl' target='_self'><i>$strUrl</i></a>";
-
-    exit;
-}
-
-/**
- * generate zip file stream
- * @param $arrImageStrings
- * @param $arrImageUrls
- * @return string
- */
-function makeZipPack($arrImageStrings, $arrImageUrls) {
-    require_once('zip.lib.php');
-    $zipGenerator = new ZipFile();
-
-    for ($i = 0, $length = sizeof($arrImageStrings); $i < $length; $i++) {
-
-        $strImageString = $arrImageStrings[$i];
-        $strImageUrl    = $arrImageUrls[$i];
-
-        $zipGenerator->addFile($strImageString, basename($strImageUrl));
-
+    if ($post_info['photos']) {
+        foreach ($post_info['photos'] as $item) {
+            $urls[] = $item['photo-url-1280'];
+        }
+    } else {
+        $urls[] = $post_info['photo-url-1280'];
     }
 
-    return $zipGenerator->file();
+    return $urls;
 }
 
-/**
- * make some headers for zip file as attachment download
- * @param $strZipString
- */
-function outputZipPackAsFileDownload($strZipString) {
+function get_video_url($post_info) {
+    $video_info = unserialize($post_info['video-source'])['o1'];
+    $video_id   = substr($video_info['video_preview_filename_prefix'], 0, -1);
 
-    header('Content-Type: application/zip');
-    header('Content-Length: ' . strlen($strZipString));
-    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
+    return "http://vt.tumblr.com/$video_id.mp4";
+}
 
-    echo $strZipString;
+function redirect_location($redirect_url) {
+    header('Location: ' . $redirect_url, true, 301);
+
+    return true;
+}
+
+function echoTxtFile($content) {
+    header('Content-Type: text/plain');
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.txt');
+
+    echo $content;
+
+    return true;
+}
+
+function exit_script($message = null) {
+    exit($message);
 }
