@@ -20,6 +20,13 @@ function main() {
     $post_info = $post_info['posts'][0];
 
     switch ($post_info['type']) {
+        case 'answer':
+            $question = html_entity_decode($post_info['question']);
+            $answer   = html_entity_decode($post_info['answer']);
+            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n";
+            echoTxtFile($output);
+            exit_script();
+            break;
         case 'video':
             $url = get_video_url($post_info);
             redirect_location($url) && exit_script();
