@@ -30,7 +30,7 @@ function main() {
             $urls  = get_photo_urls($post_info);
             $count = count($urls);
             $count === 1 && redirect_location($urls[0]) && exit_script();
-            $count > 1 && echoTxtFile(implode("\r\n", $urls)) && exit_script();
+            $count > 1 && echoTxtFile(implode("\r\n", $urls) . "\r\n") && exit_script();
             break;
 
     }
