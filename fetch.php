@@ -29,8 +29,15 @@ function main() {
         default:
             $urls  = get_photo_urls($post_info);
             $count = count($urls);
-            $count === 1 && redirect_location($urls[0]) && exit_script();
-            $count > 1 && echoTxtFile(implode("\r\n", $urls) . "\r\n") && exit_script();
+            if ($count === 1) {
+                redirect_location($urls[0]);
+                exit_script();
+            } else {
+                $image_pack = fetch_images($urls);
+                $zip_str    = makeZip($image_pack);
+                echoZipFile($zip_str);
+                exit_script();
+            }
             break;
 
     }
@@ -130,6 +137,62 @@ function get_video_url($post_info) {
 
 function redirect_location($redirect_url) {
     header('Location: ' . $redirect_url, true, 301);
+
+    return true;
+}
+
+/**
+ * get images raw strings
+ * @param $urls
+ * @return array
+ */
+function fetch_images($urls) {
+
+    $images_pack = array('images' => array(), 'fileNames' => array(), 'count' => 0);
+
+    $valid_status = array(200, 301, 304);
+
+    foreach ($urls as $url) {
+
+        $image_str = @file_get_contents($url);
+        if ($image_str === false) {
+            continue;
+        }
+
+        $status = parseHeaders($http_response_header, 'status');
+
+        $fetched = in_array($status, $valid_status);
+        if ($fetched) {
+            $images_pack['images'][]    = $image_str;
+            $images_pack['fileNames'][] = basename($url);
+            $images_pack['count']++;
+        }
+
+    }
+
+    return $images_pack;
+}
+
+function makeZip($images_pack) {
+    require_once('zip.lib.php');
+    $zipGenerator = new ZipFile();
+
+    for ($i = 0; $i < $images_pack['count']; $i++) {
+        $image_str = $images_pack['images'][$i];
+        $filename  = $images_pack['fileNames'][$i];
+
+        $zipGenerator->addFile($image_str, $filename);
+    }
+
+    return $zipGenerator->file();
+}
+
+function echoZipFile($zip_str) {
+    header('Content-Type: application/zip');
+    header('Content-Length: ' . strlen($zip_str));
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.zip');
+
+    echo $zip_str;
 
     return true;
 }
