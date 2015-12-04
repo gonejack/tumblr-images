@@ -54,7 +54,7 @@ function main() {
  * @return array|bool
  */
 function get_query_param($url) {
-    if (preg_match('<https?://(.+\.tumblr\.com)/post/(\d+)>', $url, $match)) {
+    if (preg_match('<https?://(.+)/post/(\d+)>', $url, $match)) {
         return array(
             'post_domain' => $match[1],
             'post_id'     => $match[2]
