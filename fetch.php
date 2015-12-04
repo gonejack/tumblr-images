@@ -23,7 +23,8 @@ function main() {
         case 'answer':
             $question = html_entity_decode($post_info['question']);
             $answer   = html_entity_decode($post_info['answer']);
-            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n";
+            $tags     = implode('|', $post_info['tags']);
+            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n\r\nTags:$tags";
             echoTxtFile($output);
             exit_script();
             break;
