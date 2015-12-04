@@ -9,13 +9,13 @@
 main();
 
 function main() {
-    !isset($_GET['url']) && exit_script('Hello tumblr!');
+    !isset($_GET['url']) && exit_script('Hello Tumblr!');
 
     $query_param = get_query_param($_GET['url']);
-    !$query_param && echoTxtFile("Not valid tumblr URL: [{$_GET['url']}]") && exit_script();
+    !$query_param && echoTxtFile("NOT VALID TUMBLR URL: [{$_GET['url']}]") && exit_script();
 
     $post_info = query_tumblr_api($query_param);
-    !$post_info && echoTxtFile("No post info fetched from tumblr with given URL: [{$_GET['url']}], the post might be deleted") && exit_script();
+    !$post_info && echoTxtFile("NO POST INFO FETCHED FROM TUMBLR WITH GIVEN URL: [{$_GET['url']}], THE POST MIGHT BE DELETED") && exit_script();
 
     $post_info = $post_info['posts'][0];
 
