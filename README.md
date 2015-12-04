@@ -10,15 +10,10 @@ finding for a way to download images urls whose inside txts?
 3. paste codes below inside down_images.bat
     ```
     C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe -command "type *.txt | sort-object -unique | out-file all_images.txt -Encoding "UTF8""
-    
     mkdir tumblr_images_download
-    
     move all_images.txt ./tumblr_images_download/
-    
     move aria2c.exe ./tumblr_images_download/
-    
     cd tumblr_images_download/
-    
     aria2c.exe -i all_images.txt
     ```
 4. put txt files, down_images.bat and aria2c.exe inside a directory.
