@@ -24,7 +24,7 @@ function main() {
             $question = htmlCharsDecode($post_info['question']);
             $answer   = htmlCharsDecode($post_info['answer']);
             $tags     = implode(', ', $post_info['tags']);
-            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n\r\nTags:$tags\r\n";
+            $output   = "[Q&A]\r\n\r\n$question\r\n\r\n$answer\r\n\r\nTags: $tags\r\n";
             echoTxtFile($output);
             exit_script();
             break;
