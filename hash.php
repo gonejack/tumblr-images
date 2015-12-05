@@ -10,13 +10,20 @@ main();
 
 function main() {
     !isset($_GET['url']) && exit_script('Hello Tumblr!');
-    isImagesUrl($_GET['url']) && redirect_location($_GET['url']) && exit_script();
+    isImageUrl($_GET['url']) && redirect_location($_GET['url']) && exit_script();
 
     $hosts_number = 4;
     $hash_no      = str_hash($_GET['url'], $hosts_number);
+    -
     $redirect_url = "http://tumblr-images-$hash_no.appspot.com/fetch.php?url={$_GET['url']}";
 
     redirect_location($redirect_url);
+}
+
+function isImageUrl($url) {
+    $pattern = "<https?://\d+\.media\.tumblr\.com/(\w+/)?tumblr_\w+_(1280|540|500|400|250)\.(png|jpg|gif)>";
+
+    return !!preg_match($pattern, $url);
 }
 
 function redirect_location($redirect_url) {
