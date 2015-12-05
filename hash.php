@@ -14,7 +14,7 @@ function main() {
 
     $hosts_number = 4;
     $hash_no      = str_hash($_GET['url'], $hosts_number);
-    $redirect_url = "http://tumblr-images-$hash_no.appspot.com/fetch.php?url={$_GET['']}";
+    $redirect_url = "http://tumblr-images-$hash_no.appspot.com/fetch.php?url={$_GET['url']}";
 
     redirect_location($redirect_url);
 }
