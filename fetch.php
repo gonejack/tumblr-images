@@ -19,7 +19,6 @@ function main() {
     !$post_info && echoTxtFile("NO POST INFO FETCHED FROM TUMBLR WITH GIVEN URL: [{$_GET['url']}], THE POST MIGHT BE DELETED") && exit_script();
 
     $post_info = $post_info['posts'][0];
-
     switch ($post_info['type']) {
         case 'link':
             $output = <<< EOD
@@ -71,10 +70,6 @@ function isImagesUrl($url) {
     return !!preg_match($pattern, $url);
 }
 
-/**
- * @param $url
- * @return array|bool
- */
 function get_query_param($url) {
     if (preg_match('<https?://(.+)/post/(\d+)>', $url, $match)) {
         return array(
@@ -86,10 +81,6 @@ function get_query_param($url) {
     }
 }
 
-/**
- * @param $query_param
- * @return bool|mixed
- */
 function query_tumblr_api($query_param) {
     $api_url = "http://{$query_param['post_domain']}/api/read/json?id={$query_param['post_id']}";
 
@@ -106,14 +97,6 @@ function query_tumblr_api($query_param) {
     }
 }
 
-/**
- * Parse a set of HTTP headers
- *
- * @param array The php headers to be parsed
- * @param [string] The name of the header to be retrieved
- * @return A header value if a header is passed;
- *         An array with all the headers otherwise
- */
 function parseHeaders(array $headers, $header = null) {
     $output = array();
 
@@ -138,10 +121,6 @@ function parseHeaders(array $headers, $header = null) {
     return $output;
 }
 
-/**
- * @param $post_info
- * @return array
- */
 function get_photo_urls($post_info) {
     $urls = array();
 
@@ -184,11 +163,6 @@ function htmlCharsDecode($str) {
     return mb_decode_numericentity(html_entity_decode($str), $convertMap, 'UTF-8');
 }
 
-/**
- * get images raw strings
- * @param $urls
- * @return array
- */
 function fetch_images($urls) {
 
     $images_pack = array('images' => array(), 'fileNames' => array(), 'count' => 0);
