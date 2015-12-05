@@ -20,6 +20,16 @@ function main() {
     $post_info = $post_info['posts'][0];
 
     switch ($post_info['type']) {
+        case 'link':
+            $output = <<< EOD
+                <p>Title: <h3>{$post_info['link-text']}</h3></p>
+                <p>link: <a href="{$post_info['link-url']}">{$post_info['link-url']}</a></p>
+                <p>Description:</p>
+                <p>{$post_info['link-description']}</p>
+EOD;
+            echoHtmlFile($output);
+            exit_script();
+            break;
         case 'answer':
             $question = htmlCharsDecode($post_info['question']);
             $answer   = htmlCharsDecode($post_info['answer']);
@@ -221,6 +231,15 @@ function echoZipFile($zip_str) {
 function echoTxtFile($content) {
     header('Content-Type: text/plain');
     header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.txt');
+
+    echo $content;
+
+    return true;
+}
+
+function echoHtmlFile($content) {
+    header('Content-Type: text/html');
+    header('Content-Disposition: attachment; filename=' . date('Y/M/j/D G:i:s') . '.htm');
 
     echo $content;
 
