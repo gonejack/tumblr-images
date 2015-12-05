@@ -30,6 +30,11 @@ EOD;
             echoHtmlFile($output);
             exit_script();
             break;
+        case 'regular':
+            $output = "<h3>{$post_info['regular-title']}</h3>{$post_info['regular-body']}";
+            echoHtmlFile($output);
+            exit_script();
+            break;
         case 'answer':
             $question = htmlCharsDecode($post_info['question']);
             $answer   = htmlCharsDecode($post_info['answer']);
