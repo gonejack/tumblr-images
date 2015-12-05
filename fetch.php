@@ -6,12 +6,13 @@
  * Time: 22:45
  */
 
-main();
+//main();
 
 function main() {
     !isset($_GET['url']) && exit_script('Hello Tumblr!');
 
     $query_param = get_query_param($_GET['url']);
+    !$query_param && isImagesUrl($_GET['url']) && redirect_location($_GET['url']) && exit_script();
     !$query_param && echoTxtFile("NOT VALID TUMBLR URL: [{$_GET['url']}]") && exit_script();
 
     $post_info = query_tumblr_api($query_param);
@@ -62,6 +63,12 @@ EOD;
             }
             break;
     }
+}
+
+function isImagesUrl($url) {
+    $pattern = "<https?://\d+\.media\.tumblr\.com/(\w+/)?tumblr_\w+_(1280|540|500|400|250)\.(png|jpg|gif)>";
+
+    return !!preg_match($pattern, $url);
 }
 
 /**
