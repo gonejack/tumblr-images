@@ -6,7 +6,7 @@
  * Time: 22:45
  */
 
-//main();
+main();
 
 function main() {
     !isset($_GET['url']) && exit_script('Hello Tumblr!');
