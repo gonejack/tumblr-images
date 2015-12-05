@@ -15,8 +15,20 @@ function main() {
     $hosts_number = 4;
     $hash_no      = str_hash($_GET['url'], $hosts_number);
     $redirect_url = "http://tumblr-images-$hash_no.appspot.com/fetch.php?url={$_GET['url']}";
+    $redirect_url = encode_cjk_url($redirect_url);
 
     redirect_location($redirect_url);
+}
+
+function encode_cjk_url($raw_url) {
+
+    $url = $raw_url;
+    if (preg_match('<(http.+?tumblr\.com)(.+$)>i', $raw_url, $matches)) {
+        $path_parts = array_map('urlencode', explode('/', $matches[2]));
+        $url        = $matches[1] . implode('/', $path_parts);
+    }
+
+    return $url;
 }
 
 function isImageUrl($url) {
