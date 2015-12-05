@@ -26,7 +26,7 @@ function isImageUrl($url) {
 }
 
 function redirect_location($redirect_url) {
-    header('Location: ' . $redirect_url, true, 301);
+    header("Location: $redirect_url", true, 301);
 
     return true;
 }
