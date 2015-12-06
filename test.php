@@ -6,16 +6,25 @@
  * Time: 02:47
  */
 
-require_once 'google-api-php-client/vendor/autoload.php';
+// buffer all upcoming output
+ob_start();
+echo "Here's my awesome web page";
 
-$client = new Google_Client();
-$client->setApplicationName("Client_Library_Examples");
-$client->setDeveloperKey("YOUR_APP_KEY");
+// get the size of the output
+$size = ob_get_length();
 
-$service   = new Google_Service_Books($client);
-$optParams = array('filter' => 'free-ebooks');
-$results   = $service->volumes->listVolumes('Henry David Thoreau', $optParams);
+// send headers to tell the browser to close the connection
+header("Content-Length: $size");
+header('Connection: close');
 
-foreach ($results as $item) {
-    echo $item['volumeInfo']['title'], "<br /> \n";
-}
+// flush all output
+ob_end_flush();
+ob_flush();
+flush();
+
+// close current session
+if (session_id()) session_write_close();
+
+sleep(10);
+
+echo 'you should not see';
